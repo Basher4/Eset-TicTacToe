@@ -12,17 +12,20 @@
 		/// </summary>
 		public char Symbol { get; protected set; }
 
+		/// <summary>
+		/// Used to indicate whether game should update the game grid when this player's on move. <para/>
+		/// </summary>
 		public bool ShouldRedrawScreen { get; protected set; }
 
 		//instance of game player belongs to
 		private CTicTacToe2D _game = null;
 		private int _playerId = -1;
 
-		public APlayer(string name, char symbol)
+		public APlayer(string name, char symbol, bool shouldRedrawScreen = true)
 		{
 			Name   = name;
 			Symbol = symbol;
-			ShouldRedrawScreen = true;
+			ShouldRedrawScreen = shouldRedrawScreen;
 		}
 
 		/// <summary>

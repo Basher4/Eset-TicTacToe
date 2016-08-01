@@ -4,7 +4,7 @@ namespace TicTacToeV2
 {
 	public class CPlayerHuman : APlayer
 	{
-		public CPlayerHuman(string name, char symbol) : base(name, symbol)
+		public CPlayerHuman(string name, char symbol, bool shouldRedrawScreen = true) : base(name, symbol, shouldRedrawScreen)
 		{
 		}
 

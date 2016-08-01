@@ -4,11 +4,9 @@ namespace TicTacToeV2
 	{
 		public AAiController AiController { get; set; }
 
-		public CPlayerAI(string name, char symbol, AAiController aiController) : base(name, symbol)
+		public CPlayerAI(string name, char symbol, AAiController aiController, bool shouldRedrawScreen = true) : base(name, symbol, shouldRedrawScreen)
 		{
 			AiController = aiController;
-
-			ShouldRedrawScreen = false;
 		}
 
 		/// <summary>
