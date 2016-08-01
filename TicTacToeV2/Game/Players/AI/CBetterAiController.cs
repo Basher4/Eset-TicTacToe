@@ -94,8 +94,8 @@ namespace TicTacToeV2
 		private double CalculateScoreForCell(int x, int y)
 		{
 			//works best if these two are the same value
-			const int MY_STREAK_MULTIPLIER = 10;
-			const int ENEMY_STREAK_MULTIPLIER = 11;
+			const int MY_STREAK_MULTIPLIER = 1;
+			const int ENEMY_STREAK_MULTIPLIER = 1;
 
 			/*
 			 * I can win	 -> double.MaxValue
@@ -134,14 +134,13 @@ namespace TicTacToeV2
 			}
 
 			var best = streaks[0];
-			/*
-			var best = new Tuple(false, 0)
+			
+			/*var best = new Tuple(false, 0)
 			{
 				StreakLength = (int)((	from streak in streaks
 										where !streak.IsMyStreak
-										select streak).Sum(s => s.StreakLength) * 0.9f )	//sum all enemy streaks, not mine
-			};
-			*/
+										select streak).Sum(s => s.StreakLength) )	//sum all enemy streaks, not mine
+			};*/
 
 			//Get streak with best score
 			foreach (var streak in streaks)
