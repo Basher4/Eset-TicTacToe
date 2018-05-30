@@ -2,15 +2,13 @@
 {
     public abstract class AAiController
     {
-        #region Protected variables
-        protected CTicTacToe2D Game;
+        private bool _isInitialized;
 
-        protected bool IsInitialized = false;
+        protected CTicTacToe2D Game;
         protected int PlayerId = -1;
-        #endregion
 
         /// <summary>
-        /// Initialize aiController
+        /// Initialize AiController
         /// </summary>
         /// <param name="game">Game instance</param>
         /// <param name="playerId">Controller's owner player id</param>
@@ -21,8 +19,8 @@
                 Game = game;
             }
 
-            System.Diagnostics.Debug.WriteLineIf(IsInitialized, "AiController initialized more than once");
-            IsInitialized = true;
+            System.Diagnostics.Debug.WriteLineIf(_isInitialized, "AiController initialized more than once");
+            _isInitialized = true;
             PlayerId = playerId;
         }
 
@@ -43,7 +41,7 @@
         /// <param name="message">Message of exception</param>
         protected void AssertInitialized(string message = "AiController must be initialized before use")
         {
-            if (!IsInitialized)
+            if (!_isInitialized)
             {
                 throw new GameException(message);
             }

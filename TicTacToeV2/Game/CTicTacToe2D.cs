@@ -11,7 +11,7 @@ namespace TicTacToeV2
     /// </summary>
     public class CTicTacToe2D
     {
-        public EGameState	GameState { get; private set; } = EGameState.Unknown;
+        public EGameState GameState { get; private set; } = EGameState.Unknown;
 
         /// <summary>
         /// Size of the game grid
@@ -19,13 +19,13 @@ namespace TicTacToeV2
         public int GridSize { get; private set; }
 
 
-        private List<APlayer>	_players;						//collection of all players
-        private	int[,]			_gameGrid;						//game grid - cell contains index of aPlayer, -1 is empty cell
-        private	int				_playerOnMove	= -1;			//index of APlayer in players collection whose turn is now
-        private	int				_freeCellsLeft  = -1;			//number of free cells left
-        private	int				_winnerId		= -1;			//if of the winner; -1 = tie
+        private List<APlayer> _players;                     //collection of all players
+        private int[,]        _gameGrid;                    //game grid - cell contains index of aPlayer, -1 is empty cell
+        private int           _playerOnMove = -1;           //index of APlayer in players collection whose turn is now
+        private int           _freeCellsLeft = -1;          //number of free cells left
+        private int           _winnerId = -1;               //if of the winner; -1 = tie
 
-        private bool			_showNumbers	= false;		//show numbers along the axis, better user experience?
+        private bool _showNumbers = false;                  //show numbers along the axis, better user experience?
 
         /// <summary>
         /// Creates a Tic Tac Toe game with grid NxN and initializes the game
@@ -53,7 +53,7 @@ namespace TicTacToeV2
                 case EGameState.Unknown:
                     throw new GameException("Game must be initialized before calling Start()");
                 case EGameState.Play:
-                    throw new GameException("Game already running on this instance.");
+                    throw new GameException("Game is already running on this instance.");
             }
 
             //check if game is not being played
@@ -70,7 +70,7 @@ namespace TicTacToeV2
             if (_playerOnMove == -1)
             {
                 //set first aPlayer to start
-                Debug.WriteLine("First player not set. Using first one in collection.");
+                Debug.WriteLine("First player not set.");
                 _playerOnMove = 0;
             }
 
@@ -94,7 +94,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Set player which makes first move
+        /// Set which player makes the first move
         /// </summary>
         /// <param name="aPlayer"></param>
         public void SetStartPlayer(APlayer aPlayer)
@@ -108,7 +108,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Set player which makes first move
+        /// Set the index of a player which makes the first move
         /// </summary>
         /// <param name="index">Index of player in list</param>
         public void SetStartPlayer(int index)
@@ -122,7 +122,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Add aPlayer to the game
+        /// Add a player to the game
         /// </summary>
         /// <param name="aPlayer"></param>
         public void AddPlayer(APlayer aPlayer)
@@ -131,7 +131,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Add collection of players to the game
+        /// Add a collection of players to the game
         /// </summary>
         /// <param name="players">Collection of players</param>
         public void AddPlayers(IEnumerable<APlayer> players)
@@ -143,7 +143,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Remove aPlayer from the game if it's not playing
+        /// Remove a player from the game if it's not playing
         /// </summary>
         /// <param name="aPlayer">Player to remove</param>
         /// <returns>True if the player was removed from list of players</returns>
@@ -158,7 +158,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Remove players from the game
+        /// Remove players from the game if they are not playing
         /// </summary>
         /// <param name="players">Players to remove</param>
         public void RemovePlayers(IEnumerable<APlayer> players)
@@ -170,7 +170,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Resize the game grid before a game begins
+        /// Resize the game grid. Can be done only if the game is not running
         /// </summary>
         /// <param name="size"></param>
         public void ResizeGrid(int size)
@@ -182,20 +182,18 @@ namespace TicTacToeV2
 
             GridSize = size;
 
-            _gameGrid = new int[size,size];
+            _gameGrid = new int[size, size];
         }
         #endregion
 
-        //Initialize all variables
         private void Initialize()
         {
             GameState = EGameState.Initialize;
 
-            //initialize game grid to all empty cell
-            //y then x should be better for cache
-            for (int y = 0; y < _gameGrid.GetLength(1); y++)
+            //fill the game grid with empty 
+            for (int x = 0; x < _gameGrid.GetLength(0); x++)
             {
-                for (int x = 0; x < _gameGrid.GetLength(0); x++)
+                for (int y = 0; y < _gameGrid.GetLength(1); y++)
                 {
                     _gameGrid[x, y] = -1;
                 }
@@ -220,7 +218,7 @@ namespace TicTacToeV2
                 do
                 {
                     desiredMove = _players[_playerOnMove].Move();
-                } while (!ValidMove(desiredMove));
+                } while (!IsValidMove(desiredMove));
 
                 //Update grid and decrease free cells
                 UpdateCell(desiredMove);
@@ -255,7 +253,7 @@ namespace TicTacToeV2
             else if (_freeCellsLeft == 0)
             {
                 GameState = EGameState.Finish;
-                _winnerId = -1;					//no winner found above -> tie
+                _winnerId = -1;                     //no winner found above -> tie
             }
         }
 
@@ -264,9 +262,9 @@ namespace TicTacToeV2
         /// 
         /// <para>
         /// Indexes in array:<para />
-        ///		0 1 2<para />
-        ///		3 P 3<para />
-        ///		2 1 0
+        ///     0 1 2<para />
+        ///     3 P 3<para />
+        ///     2 1 0
         /// </para>
         ///
         /// </summary>
@@ -413,18 +411,6 @@ namespace TicTacToeV2
 
             return directions;
         }
-
-        public int[] GetPlayerOwnedLines(int x, int y, int playerToCheck)
-        {
-            return GetPlayerOwnedLines(new Point2D(x, y), playerToCheck);
-        }
-
-        public int[] GetPlayerOwnedLines(int x, int y, APlayer playerToCheck)
-        {
-            var id = _players.IndexOf(playerToCheck);   //-1 if invalid -> checked in 'main' GetPlayerOwnedLines method
-
-            return GetPlayerOwnedLines(new Point2D(x, y), id);
-        }
         #endregion
 
         /// <summary>
@@ -434,28 +420,29 @@ namespace TicTacToeV2
         private void UpdateCell(Point2D cell) => _gameGrid[cell.X, cell.Y] = _playerOnMove;
 
         /// <summary>
-        /// Get content of cell at position
+        /// Get the content of a cell
         /// </summary>
         /// <param name="point">Cell position</param>
         /// <returns>Cell's content id</returns>
         public int CellAt(Point2D point) => _gameGrid[point.X, point.Y];
 
         /// <summary>
-        /// Get content of cell at position
+        /// Get the content of a cell
         /// </summary>
-        /// <param name="x">Cell's X position</param>
-        /// <param name="y">Cell's Y position</param>
+        /// <param name="x">X coordinate</param>
+        /// <param name="y">Y coordinate</param>
         /// <returns>Cell's content id</returns>
         public int CellAt(int x, int y) => _gameGrid[x, y];
 
-        private bool ValidMove(Point2D point)
+        private bool IsValidMove(Point2D point)
         {
-            return (point.X >= 0 && point.X < GridSize) && (point.Y >= 0 && point.Y < GridSize)	//valid position within grid
-                    && CellAt(point) == -1;														//cell is not marked
+            return (point.X >= 0 && point.X < GridSize) && (point.Y >= 0 && point.Y < GridSize) //valid position within grid
+                    && CellAt(point) == -1;                                                     //cell is not marked
         }
 
-        #region Output
-        protected void WriteFinishGame()
+        #region Output to console
+
+        private void WriteFinishGame()
         {
             Console.Clear();
 
@@ -485,7 +472,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Write this game to the Console
+        /// Writes whole game to the Console
         /// </summary>
         private void WriteGame()
         {
@@ -500,11 +487,11 @@ namespace TicTacToeV2
         {
             for (int i = 0; i < GridSize; i++)
             {
-                WriteSeparator();
+                WriteSeparatorLine();
                 WriteShapes(i);
             }
 
-            WriteSeparator();
+            WriteSeparatorLine();
         }
 
         /// <summary>
@@ -512,10 +499,9 @@ namespace TicTacToeV2
         /// </summary>
         private void WritePlayerOnMove()
         {
-            int spaceCount = Math.Max(GridSize * 2 - _players[_playerOnMove].Name.Length / 2, 0);	//X position to center player's name or 0
+            int spaceCount = Math.Max(GridSize * 2 - _players[_playerOnMove].Name.Length / 2, 0);   //X position to center player's name or 0
 
             Console.SetCursorPosition(spaceCount, 0);
-
             Console.WriteLine($"[{_players[_playerOnMove].Name}]");
         }
 
@@ -546,7 +532,7 @@ namespace TicTacToeV2
         /// Writes separator
         /// +---+---+---+---+
         /// </summary>
-        private void WriteSeparator()
+        private void WriteSeparatorLine()
         {
             for (int i = 0; i < GridSize; i++)
             {

@@ -69,7 +69,7 @@ namespace TicTacToeV2
                 for (int x = 0; x < _gridSize; x++)
                 {
                     //assess one cell
-                    var score = CalculateScoreForCell(x, y) * -1;	//lowest number = highest priority
+                    var score = CalculateScoreForCell(x, y) * -1;   //lowest number = highest priority
 
                     //var distanceFromEdge = Math.Min(x, y) + 1;
                     //score += Math.Log10(distanceFromEdge * LOGARITHM_MAGIC_CONSTANT);
@@ -92,11 +92,11 @@ namespace TicTacToeV2
             const int ENEMY_STREAK_MULTIPLIER = 1;
 
             /*
-             * I can win	 -> double.MaxValue
+             * I can win     -> double.MaxValue
              * Enemy can win -> double.MaxValue
              * otherwise:
-             *		enemy streak * ENEMY_STREAK_MULTIPLIER
-             *		my stream * MY_STREAK_MULTIPLIER
+             *      enemy streak * ENEMY_STREAK_MULTIPLIER
+             *      my stream * MY_STREAK_MULTIPLIER
              */
             //x If no one can win in every direction -> score = 0
 
@@ -160,6 +160,7 @@ namespace TicTacToeV2
         /// <returns>BOOL - my streak; INT - streak length</returns>
         private Tuple[] CalcStreaksInEveryDirection(int x, int y)
         {
+
             if (Game.CellAt(x, y) != -1)
             {
                 //Not an empty cell
@@ -169,45 +170,13 @@ namespace TicTacToeV2
             var streakLengths = new int[8];
             var myStreaks = new bool[8];
 
-            //function to calculate streak length and save it to the array
-            var fCalcLine = new Action<int, int, int>
-            (
-                (index, dx, dy) =>
-                {
-                    int _x = x + dx, _y = y + dy;
-                    if (!(_x >= 0 && _x < _gridSize && _y >= 0 && _y < _gridSize)) return;
-
-                    int id = Game.CellAt(_x, _y);
-                    if (id == -1)
-                    {
-                        streakLengths[index] = 0;
-                        myStreaks[index] = true;
-                        return;
-                    }
-
-                    myStreaks[index] = (id == PlayerId);
-
-                    while (_x >= 0 && _x < _gridSize && _y >= 0 && _y < _gridSize)
-                    {
-                        if (Game.CellAt(_x, _y) == id)
-                        {
-                            streakLengths[index]++;
-                        }
-
-                        _x += dx;
-                        _y += dy;
-                    }
-                }
-            );
-
-
-            fCalcLine(0, -1, -1);	//left	up
-            fCalcLine(1, +0, -1);	//		up
-            fCalcLine(2, +1, -1);	//right	up
+            fCalcLine(0, -1, -1);   //left  up
+            fCalcLine(1, +0, -1);   //      up
+            fCalcLine(2, +1, -1);   //right up
             fCalcLine(3, +1, +0);   //right
-            fCalcLine(4, +1, +1);   //right	down
-            fCalcLine(5, +0, +1);   //		down
-            fCalcLine(6, -1, +1);   //left	down
+            fCalcLine(4, +1, +1);   //right down
+            fCalcLine(5, +0, +1);   //      down
+            fCalcLine(6, -1, +1);   //left  down
             fCalcLine(7, -1, +0);   //left
 
             var tuples = new Tuple[8];
@@ -217,6 +186,34 @@ namespace TicTacToeV2
             }
 
             return tuples;
+
+            //function to calculate streak length and save it to the array
+            void fCalcLine(int index, int dx, int dy)
+            {
+                int _x = x + dx, _y = y + dy;
+                if (!(_x >= 0 && _x < _gridSize && _y >= 0 && _y < _gridSize)) return;
+
+                int id = Game.CellAt(_x, _y);
+                if (id == -1)
+                {
+                    streakLengths[index] = 0;
+                    myStreaks[index] = true;
+                    return;
+                }
+
+                myStreaks[index] = (id == PlayerId);
+
+                while (_x >= 0 && _x < _gridSize && _y >= 0 && _y < _gridSize)
+                {
+                    if (Game.CellAt(_x, _y) == id)
+                    {
+                        streakLengths[index]++;
+                    }
+
+                    _x += dx;
+                    _y += dy;
+                }
+            }
         }
     }
 }

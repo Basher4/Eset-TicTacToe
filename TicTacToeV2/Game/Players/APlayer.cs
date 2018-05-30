@@ -29,7 +29,7 @@
         }
 
         /// <summary>
-        /// Called before the game starts after initialization
+        /// Called before the game starts and after initialization
         /// </summary>
         /// <param name="game">Instance of a game that contains this player</param>
         /// <param name="playerId">Player ID in a game</param>
@@ -37,7 +37,7 @@
         {
             if (_game != null)
             {
-                throw new GameException("This player is already in this or different game.");
+                throw new GameException("This player is already in this or a different game.");
             }
 
             _game = game;
@@ -45,7 +45,7 @@
         }
 
         /// <summary>
-        /// Get location player wants to select. This should be validated afterwards.
+        /// Get the location player wants to select. This should be validated afterwards.
         /// </summary>
         /// <returns></returns>
         public abstract Point2D Move();

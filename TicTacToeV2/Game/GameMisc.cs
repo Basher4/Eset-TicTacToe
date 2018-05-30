@@ -18,6 +18,7 @@ namespace TicTacToeV2
     /// <summary>
     /// Specialized exception class for game error messages
     /// </summary>
+    [Serializable]
     public class GameException : Exception
     {
         public GameException()

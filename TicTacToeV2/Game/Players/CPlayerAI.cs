@@ -10,7 +10,7 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Initialize APlayer and aiController
+        /// Initialize APlayer and AiController
         /// </summary>
         /// <param name="game">Game instance</param>
         /// <param name="playerId">Player's ID</param>

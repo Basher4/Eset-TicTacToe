@@ -16,9 +16,8 @@ namespace TicTacToeV2
 
         public override Point2D Move()
         {
-            AssertInitialized();
+            AssertInitialized();    //We need to know the GridSize
 
-            //Think(); 
             return new Point2D(_rand.Next(Game.GridSize), _rand.Next(Game.GridSize));
         }
 

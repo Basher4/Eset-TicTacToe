@@ -10,8 +10,6 @@ namespace TicTacToeV2
 
         public override Point2D Move()
         {
-            //TODO: Maybe more interactive selection with arrow keys
-
             //Get X,Y coordinates from stdin
             Point2D point;
             string input;
