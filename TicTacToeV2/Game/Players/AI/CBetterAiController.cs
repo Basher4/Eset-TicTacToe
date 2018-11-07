@@ -17,15 +17,12 @@ namespace TicTacToeV2
             public Point2D Point { get; set; }
         }
 
-        /// <summary>
-        /// internal tuple class - better naming
-        /// </summary>
-        private class Tuple
+        private class Streak
         {
             public bool IsMyStreak { get; set; }
             public int StreakLength { get; set; }
 
-            public Tuple(bool isMyStreak, int streakLength)
+            public Streak(bool isMyStreak, int streakLength)
             {
                 IsMyStreak = isMyStreak;
                 StreakLength = streakLength;
@@ -61,8 +58,6 @@ namespace TicTacToeV2
         {
             _scoreQueue.Clear();
 
-            //const double LOGARITHM_MAGIC_CONSTANT = 10;
-
             //update grid scores
             for (int y = 0; y < _gridSize; y++)
             {
@@ -71,11 +66,13 @@ namespace TicTacToeV2
                     //assess one cell
                     var score = CalculateScoreForCell(x, y) * -1;   //lowest number = highest priority
 
-                    //var distanceFromEdge = Math.Min(x, y) + 1;
-                    //score += Math.Log10(distanceFromEdge * LOGARITHM_MAGIC_CONSTANT);
 
-                    var node = new PriorityQueuePointNode {Point = new Point2D(x, y), Priority = score};
-                    //lock (_scoreQueue)
+                    var node = new PriorityQueuePointNode
+                    {
+                        Point = new Point2D(x, y),
+                        Priority = score
+                    };
+
                     {
                         _scoreQueue.Enqueue(node, score);
                         _scoreGrid[x, y] = score;
@@ -87,10 +84,6 @@ namespace TicTacToeV2
         //Calculates score for cell - higher score = better cell
         private double CalculateScoreForCell(int x, int y)
         {
-            //works best if these two are the same value
-            const int MY_STREAK_MULTIPLIER = 1;
-            const int ENEMY_STREAK_MULTIPLIER = 1;
-
             /*
              * I can win     -> double.MaxValue
              * Enemy can win -> double.MaxValue
@@ -128,20 +121,12 @@ namespace TicTacToeV2
             }
 
             var best = streaks[0];
-            
-            /*var best = new Tuple(false, 0)
-            {
-                StreakLength = (int)((	from streak in streaks
-                                        where !streak.IsMyStreak
-                                        select streak).Sum(s => s.StreakLength) )	//sum all enemy streaks, not mine
-            };*/
 
             //Get streak with best score
             foreach (var streak in streaks)
             {
-                //if streak is mine -> 1x, otherwise 2x multiplier
-                var bestScore	= best.StreakLength		* (best.IsMyStreak		? MY_STREAK_MULTIPLIER : ENEMY_STREAK_MULTIPLIER);
-                var streakScore = streak.StreakLength	* (streak.IsMyStreak	? MY_STREAK_MULTIPLIER : ENEMY_STREAK_MULTIPLIER);
+                var bestScore = GetStreakScore(best);
+                var streakScore = GetStreakScore(streak);
 
                 if (bestScore < streakScore)
                 {
@@ -149,7 +134,21 @@ namespace TicTacToeV2
                 }
             }
 
-            return best.StreakLength * (best.IsMyStreak ? MY_STREAK_MULTIPLIER : ENEMY_STREAK_MULTIPLIER);	//score as described by the comment
+            return GetStreakScore(best);
+
+            
+            int GetStreakScore(Streak streak)
+            {
+                // if I would want to pay more attention to my or enemy streaks,
+                // I'd change these multipliers
+
+                const int myStreakMultiplier = 1;
+                const int enemyStreakMultiplier = 1;
+
+                var streakMultiplier = streak.IsMyStreak ?
+                    myStreakMultiplier : enemyStreakMultiplier;
+                return streak.StreakLength * streakMultiplier;
+            }
         }
 
         /// <summary>
@@ -158,9 +157,8 @@ namespace TicTacToeV2
         /// <param name="x">X position of center</param>
         /// <param name="y">Y position of center</param>
         /// <returns>BOOL - my streak; INT - streak length</returns>
-        private Tuple[] CalcStreaksInEveryDirection(int x, int y)
+        private Streak[] CalcStreaksInEveryDirection(int x, int y)
         {
-
             if (Game.CellAt(x, y) != -1)
             {
                 //Not an empty cell
@@ -170,25 +168,25 @@ namespace TicTacToeV2
             var streakLengths = new int[8];
             var myStreaks = new bool[8];
 
-            fCalcLine(0, -1, -1);   //left  up
-            fCalcLine(1, +0, -1);   //      up
-            fCalcLine(2, +1, -1);   //right up
-            fCalcLine(3, +1, +0);   //right
-            fCalcLine(4, +1, +1);   //right down
-            fCalcLine(5, +0, +1);   //      down
-            fCalcLine(6, -1, +1);   //left  down
-            fCalcLine(7, -1, +0);   //left
+            FCalcLine(0, -1, -1);   //left  up
+            FCalcLine(1, +0, -1);   //      up
+            FCalcLine(2, +1, -1);   //right up
+            FCalcLine(3, +1, +0);   //right
+            FCalcLine(4, +1, +1);   //right down
+            FCalcLine(5, +0, +1);   //      down
+            FCalcLine(6, -1, +1);   //left  down
+            FCalcLine(7, -1, +0);   //left
 
-            var tuples = new Tuple[8];
+            var tuples = new Streak[8];
             for (int i = 0; i < 8; i++)
             {
-                tuples[i] = new Tuple(myStreaks[i], streakLengths[i]);
+                tuples[i] = new Streak(myStreaks[i], streakLengths[i]);
             }
 
             return tuples;
 
             //function to calculate streak length and save it to the array
-            void fCalcLine(int index, int dx, int dy)
+            void FCalcLine(int index, int dx, int dy)
             {
                 int _x = x + dx, _y = y + dy;
                 if (!(_x >= 0 && _x < _gridSize && _y >= 0 && _y < _gridSize)) return;
