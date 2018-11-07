@@ -29,11 +29,13 @@ namespace TicTacToeV2
         {
         }
 
-        public GameException(string message, Exception innerException) : base(message, innerException)
+        public GameException(string message, Exception innerException) 
+            : base(message, innerException)
         {
         }
 
-        protected GameException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected GameException(SerializationInfo info, StreamingContext context) 
+            : base(info, context)
         {
         }
     }
@@ -52,6 +54,12 @@ namespace TicTacToeV2
             Y = y;
         }
 
+        public static bool ReadFromConsole(out Point2D point)
+        {
+            var input = Console.ReadLine();
+            return TryParse(input, out point);
+        }
+
         /// <summary>
         /// Parses X,Y coordinates divided by comma or space from <paramref name="text"/>
         /// </summary>
@@ -63,19 +71,17 @@ namespace TicTacToeV2
             try
             {
                 int[] coords = Array.ConvertAll(text.Split(',', ' '), int.Parse);
-
-                //if conversion succeeded, no exception is thrown
                 output = new Point2D(coords[0], coords[1]);
+
+                return true;
             }
             catch (Exception)
             {
-                //exception occurred - invalid text
+                //invalid text
                 output = new Point2D();
-
-                return false;
             }
 
-            return true;
+            return false;
         }
     }
 }

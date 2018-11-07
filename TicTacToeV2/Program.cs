@@ -21,7 +21,9 @@ namespace TicTacToeV2
                 if (gridSize >= 1)
                     break;
 
-                Console.WriteLine($"No no no. Bad number. How do you expect to play with {gridSize} cells?");
+                Console.WriteLine($"No no no. Bad number. " +
+                                  $"How do you expect to play " +
+                                  $"with {gridSize} cells?");
             }
 
             //create game
@@ -32,8 +34,10 @@ namespace TicTacToeV2
 
             //create default players
             game.AddPlayer(new CPlayerHuman("Human", 'O'));
-            //game.AddPlayer(new CPlayerAI("Computer - N00B", 'O', new CRandomAiController()));
-            game.AddPlayer(new CPlayerAI("Computer - Better", 'X', new CBetterAiController()));
+            game.AddPlayer(
+                new CPlayerAI("Computer - Better",
+                                'X',
+                                new CBetterAiController()));
 
             Console.Write("Should human begin [Y/n]? ");
             var key = Console.ReadKey().KeyChar;

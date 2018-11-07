@@ -1,4 +1,6 @@
-﻿namespace TicTacToeV2
+﻿using System.Diagnostics;
+
+namespace TicTacToeV2
 {
     public abstract class AAiController
     {
@@ -19,7 +21,7 @@
                 Game = game;
             }
 
-            System.Diagnostics.Debug.WriteLineIf(_isInitialized, "AiController initialized more than once");
+            Debug.WriteLineIf(_isInitialized, "AiController initialized more than once");
             _isInitialized = true;
             PlayerId = playerId;
         }

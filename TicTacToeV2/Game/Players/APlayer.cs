@@ -21,7 +21,7 @@
         private CTicTacToe2D _game = null;
         private int _playerId = -1;
 
-        public APlayer(string name, char symbol, bool shouldRedrawScreen = true)
+        protected APlayer(string name, char symbol, bool shouldRedrawScreen = true)
         {
             Name   = name;
             Symbol = symbol;

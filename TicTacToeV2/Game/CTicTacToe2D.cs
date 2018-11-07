@@ -16,7 +16,7 @@ namespace TicTacToeV2
         /// <summary>
         /// Size of the game grid
         /// </summary>
-        public int GridSize { get; private set; }
+        public int GridSize { get; }
 
 
         private List<APlayer> _players;                     //collection of all players
@@ -24,8 +24,6 @@ namespace TicTacToeV2
         private int           _playerOnMove = -1;           //index of APlayer in players collection whose turn is now
         private int           _freeCellsLeft = -1;          //number of free cells left
         private int           _winnerId = -1;               //if of the winner; -1 = tie
-
-        private bool _showNumbers = false;                  //show numbers along the axis, better user experience?
 
         /// <summary>
         /// Creates a Tic Tac Toe game with grid NxN and initializes the game
@@ -84,30 +82,6 @@ namespace TicTacToeV2
         }
 
         /// <summary>
-        /// Reset the game to its initial state
-        /// </summary>
-        public void Reset()
-        {
-            GameState = EGameState.Reset;
-
-            Initialize();
-        }
-
-        /// <summary>
-        /// Set which player makes the first move
-        /// </summary>
-        /// <param name="aPlayer"></param>
-        public void SetStartPlayer(APlayer aPlayer)
-        {
-            _playerOnMove = _players.IndexOf(aPlayer);
-
-            if (_playerOnMove == -1)
-            {
-                throw new GameException("No such player in the game");
-            }
-        }
-
-        /// <summary>
         /// Set the index of a player which makes the first move
         /// </summary>
         /// <param name="index">Index of player in list</param>
@@ -129,62 +103,7 @@ namespace TicTacToeV2
         {
             _players.Add(aPlayer);
         }
-
-        /// <summary>
-        /// Add a collection of players to the game
-        /// </summary>
-        /// <param name="players">Collection of players</param>
-        public void AddPlayers(IEnumerable<APlayer> players)
-        {
-            foreach (var player in players)
-            {
-                _players.Add(player);
-            }
-        }
-
-        /// <summary>
-        /// Remove a player from the game if it's not playing
-        /// </summary>
-        /// <param name="aPlayer">Player to remove</param>
-        /// <returns>True if the player was removed from list of players</returns>
-        public bool RemovePlayer(APlayer aPlayer)
-        {
-            if (GameState == EGameState.Play)
-            {
-                throw new GameException("Cannot remove players while the game is playing");
-            }
-
-            return _players.Remove(aPlayer);
-        }
-
-        /// <summary>
-        /// Remove players from the game if they are not playing
-        /// </summary>
-        /// <param name="players">Players to remove</param>
-        public void RemovePlayers(IEnumerable<APlayer> players)
-        {
-            foreach (var player in players)
-            {
-                _players.Remove(player);
-            }
-        }
-
-        /// <summary>
-        /// Resize the game grid. Can be done only if the game is not running
-        /// </summary>
-        /// <param name="size"></param>
-        public void ResizeGrid(int size)
-        {
-            if (GameState == EGameState.Play)
-            {
-                throw new GameException("Cannot resize while a game is running.");
-            }
-
-            GridSize = size;
-
-            _gameGrid = new int[size, size];
-        }
-        #endregion
+#endregion
 
         private void Initialize()
         {
@@ -449,26 +368,9 @@ namespace TicTacToeV2
             WriteGrid();
             if (GameState == EGameState.Finish)
             {
-                if (_winnerId == -1)
-                {
-                    Colorful.Console.WriteAscii($"   TIE!");
-                }
-                else
-                {
-                    Colorful.Console.WriteAscii($"   {_players[_winnerId].Name} WON!");
-                }
+                string playerWon = $"   {_players[_winnerId].Name} WON!";
+                Colorful.Console.WriteAscii(_winnerId == -1 ? "   TIE!" : playerWon);    
             }
-        }
-
-        private void WriteGameUpdate(Point2D move, bool updateName = false)
-        {
-            if (updateName)
-            {
-                Console.SetCursorPosition(0, 0);
-                WritePlayerOnMove();
-            }
-
-            Console.SetCursorPosition(move.X * 4 + 2, move.Y * 2 + 1);
         }
 
         /// <summary>
@@ -515,15 +417,7 @@ namespace TicTacToeV2
             for (int i = 0; i < GridSize; i++)
             {
                 int value = _gameGrid[i, line];
-                if (value == -1)
-                {
-                    //empty cell
-                    Console.Write($"   |");
-                }
-                else
-                {
-                    Console.Write($" {_players[value].Symbol} |");
-                }
+                Console.Write(value == -1 ? "   |" : $" {_players[value].Symbol} |");
             }
             Console.WriteLine();
         }

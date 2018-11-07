@@ -4,23 +4,25 @@ namespace TicTacToeV2
 {
     public class CPlayerHuman : APlayer
     {
-        public CPlayerHuman(string name, char symbol, bool shouldRedrawScreen = true) : base(name, symbol, shouldRedrawScreen)
+        public CPlayerHuman(string name, char symbol, bool shouldRedrawScreen = true)
+            : base(name, symbol, shouldRedrawScreen)
         {
         }
 
+        /// <inheritdoc />
+        /// <summary>
+        /// Gets player input from console
+        /// </summary>
+        /// <returns></returns>
         public override Point2D Move()
         {
-            //Get X,Y coordinates from stdin
-            Point2D point;
-            string input;
-
+            Point2D target;
             do
             {
-                Console.Write("Write X,Y coordinates of cell you want to mark (0,0 - top left):\n > ");
-                input = Console.ReadLine();
-            } while (!Point2D.TryParse(input, out point));	//repeat unless valid point is provided
-
-            return point;
+                Console.Write("Write X,Y coordinates of the cell" +
+                              "you want to mark (0,0 - top left):\n > ");
+            } while (!Point2D.ReadFromConsole(out target));
+            return target;
         }
     }
 }
